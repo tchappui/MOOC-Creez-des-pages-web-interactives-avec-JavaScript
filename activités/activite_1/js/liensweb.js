@@ -63,7 +63,7 @@ var Lien = {
     },
 
     /**
-     * Méthode publique retournant la racine de l'arbre, l'élément section.
+     * Méthode publique retournant la racine de l'arbre, c-à-d l'élément section.
      */
     get: function() {
         return this._sectionElt;

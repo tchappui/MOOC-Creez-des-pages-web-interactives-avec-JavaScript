@@ -95,12 +95,12 @@ var Lien = {
  */
 var Liste = {
 
-    initListe: function () {
-        this._contenu = []; 
+    initListe: function() {
+        this._contenu = [];
         this._contenuElt = document.getElementById("contenu");
     },
 
-    ajouter: function (lien) {
+    ajouter: function(lien) {
         this._contenu.push(lien.get());
         this._contenuElt.appendChild(lien.get());
     },
@@ -116,7 +116,7 @@ function main() {
     liste.initListe();
 
     // Itération à travers la liste de lien
-    listeLiens.forEach(function (description) {
+    listeLiens.forEach(function(description) {
         var lien = Object.create(Lien);
         lien.initLien(description);
         liste.ajouter(lien);

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Formulaire d'inscription</title>
+  <style type="text/css">
+    input#pseudo {
+      width: 80%;
+      border-color: green;
+      border-width: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Formulaire d'inscription</h1>
+  <p>
+    <label for="pseudo">Pseudo</label>
+    <input id="pseudo" type="text" name="pseudo" placeholder="tchappui">
+    <span id="aidePseudo"></span>
+  </p>
+  <p>
+    <label for="texte">Texte</label>
+    <textarea id="texte" cols="50" rows="5" name="texte" required placeholder="Ceci est un essai"></textarea>
+
+  </p>
+  <p>
+    <label for="mdp">Mot de passe</label>
+    <input id="mdp" type="password" name="mdp" required="required">
+    <span id="aideMdp"></span>
+  </p>
+  <p>
+    <label for="courriel">Email</label>
+    <input id="courriel" type="email" name="courriel" id="courriel" required placeholder="utilisateur@domaine.ch">
+    <span id="aideCouriel"></span>
+  </p>
+  <p>
+    <input id="confirmation" type="checkbox" name="confirmation">
+    <label for="confirmation">M'envoyer un courriel de confirmation</label>
+  </p>
+  <p>
+    <input id="abonewspromo" type="radio" name="abonnement" value="abonewspromo">
+    <label for="abonewspromo">M'abonner à la newsletter et aux promotions</label>
+    <br>
+    <input id="abonews" type="radio" name="abonnement" value="abonews" checked>
+    <label for="abonews">M'abonner uniquement à la newsletter</label>
+    <br>
+    <input id="aborien" type="radio" name="abonnement" value="aborien">
+
+    <label for="aborien">Ne pas m'abonner</label>
+  </p>
+  <p>
+    <label for="nationalite">Nationalité :</label>
+    <select id="nationalite" name="nationalite">
+    <option value="FR" selected>Française</option>
+    <option value="BE">Belge</option>
+    <option value="CH">Suisse</option>
+    <option value="XX">Autre</option>
+  </select>
+  </p>
+
+</body>
+
+</html>

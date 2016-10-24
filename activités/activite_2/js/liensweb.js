@@ -59,7 +59,7 @@ var Lien = {
         this._sectionElt.appendChild(this._auteurElt);
 
         // Application des styles
-        this._appliquerStyles();
+        this._style();
     },
 
     /**
@@ -72,7 +72,7 @@ var Lien = {
     /**
      * Méthode privée responsable d'appliquer les styles.
      */
-    _appliquerStyles: function() {
+    _style: function() {
         //Styles pour l'élément titre
         this._titreElt.style.marginTop = "0";
         this._titreElt.style.marginBottom = "0.5ex";
@@ -118,13 +118,18 @@ var Formulaire = {
     _Feedback: {
         init: function(visible) {
             this._blocElt = document.createElement("p");
-            this._blocElt.style.backgroundColor = "#CEE7F0";
             if (!visible) {
                 this._blocElt.style.display = "none";
             }
 
             var contenuElt = document.getElementById("contenu");
             document.body.insertBefore(this._blocElt, contenuElt);
+
+            this._style();
+        },
+
+        _style: function () {
+            this._blocElt.style.backgroundColor = "#CEE7F0";
         },
 
         afficher: function(texte) {
@@ -149,6 +154,11 @@ var Formulaire = {
 
             var contenuElt = document.getElementById("contenu");
             document.body.insertBefore(this._blocElt, contenuElt);
+
+            this._style();
+        },
+
+        _style: function () {
         },
 
         afficher: function() {},
@@ -165,11 +175,9 @@ var Formulaire = {
             this._blocElt.appendChild(this._auteurElt);
 
             this._titreElt = this._creerSaisieTexte("titre", "Entrez le titre du lien", "25%");
-            this._titreElt.style.marginLeft = "10px";
             this._blocElt.appendChild(this._titreElt);
 
             this._urlElt = this._creerSaisieTexte("url", "Entrez l'URL du lien", "25%");
-            this._urlElt.style.marginLeft = "10px";
             this._blocElt.appendChild(this._urlElt);
 
             this._boutonElt = document.createElement("input");
@@ -178,11 +186,18 @@ var Formulaire = {
             if (!visible) {
                 this._blocElt.style.display = "none";
             }
-            this._boutonElt.style.marginLeft = "10px";
             this._blocElt.appendChild(this._boutonElt);
 
             var contenuElt = document.getElementById("contenu");
             document.body.insertBefore(this._blocElt, contenuElt);
+
+            this._style();
+        },
+
+        _style: function () {
+            this._titreElt.style.marginLeft = "10px";
+            this._urlElt.style.marginLeft = "10px";
+            this._boutonElt.style.marginLeft = "10px";
         },
 
         _creerSaisieTexte: function(name, placeholder, width) {

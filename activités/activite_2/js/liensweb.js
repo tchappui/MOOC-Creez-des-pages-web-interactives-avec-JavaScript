@@ -70,7 +70,7 @@ var Lien = {
     },
 
     /**
-     * Méthode privée responsable d'appliquer les styles.
+     * Méthode privée responsable d'appliquer les styles CSS aux liens.
      */
     _style: function() {
         //Styles pour l'élément titre
@@ -94,17 +94,25 @@ var Lien = {
  * Structure de donnée représentant la liste de liens dans le DOM.
  */
 var Liste = {
-
+    /**
+     * Méthode d'initialisation d'un objet de type "Liste de liens".
+     */
     initListe: function() {
         this._contenu = [];
         this._contenuElt = document.getElementById("contenu");
     },
 
+    /**
+     * Méthode publique permettant d'ajouter un lien en queue de liste.
+     */
     ajouter: function(lien) {
         this._contenu.push(lien.get());
         this._contenuElt.appendChild(lien.get());
     },
-
+    
+    /**
+     * Méthode publique permettant d'ajouter un lien en début de liste.
+     */
     ajouterDebut: function(lien) {
         if (this._contenu.length > 0)
         {
@@ -115,9 +123,16 @@ var Liste = {
         {
             this.ajouter(lien);
         }
+    },
 }
 
+/**
+ * Structure de donnée représentant le formulaire.
+ */
 var Formulaire = {
+    /**
+     * Méthote d'initialisation d'un formulaire de saisie de liens.
+     */
     initFormulaire: function() {
         this._Feedback.init(false);
         this._Bouton.init(true);
@@ -125,6 +140,10 @@ var Formulaire = {
         this._Feedback.afficher("Ceci est un essai");
     },
 
+    /**
+     * Structure de donnée responsable de la gestion du feedback lorsqu'un
+     * nouveau lien a été ajouté.
+     */
     _Feedback: {
         init: function(visible) {
             this._blocElt = document.createElement("p");
@@ -152,6 +171,10 @@ var Formulaire = {
 
     },
 
+    /**
+     * Structure de donnée responsable de la gestion du bouton "Ajouter un
+     * lien".
+     */
     _Bouton: {
         init: function(visible) {
             this._blocElt = document.createElement("div");
@@ -176,6 +199,9 @@ var Formulaire = {
         cacher: function() {},
     },
 
+    /**
+     * Structure de donnée responsable de la gestion du formulaire d'ajout.
+     */
     _Formulaire: {
         init: function(visible) {
             this._blocElt = document.createElement("form");
@@ -230,7 +256,8 @@ var Formulaire = {
 
 /**
  * Fonction d'exécution principale du script. Elle constitue le point d'entrée
- * pour l'exécution.
+ * pour l'exécution. L'approche objet me permet de gérer les composants de la 
+ * page en langage haut niveau.
  */
 function main() {
     // Création et initialisation de la liste

@@ -104,8 +104,18 @@ var Liste = {
         this._contenu.push(lien.get());
         this._contenuElt.appendChild(lien.get());
     },
-}
 
+    ajouterDebut: function(lien) {
+        if (this._contenu.length > 0)
+        {
+            this._contenuElt.insertBefore(lien.get(), this._contenu[0]);
+            this._contenu.splice(0, 0, lien.get());
+        }
+        else
+        {
+            this.ajouter(lien);
+        }
+}
 
 var Formulaire = {
     initFormulaire: function() {

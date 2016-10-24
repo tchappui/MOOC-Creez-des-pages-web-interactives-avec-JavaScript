@@ -24,71 +24,68 @@ var listeLiens = [{
 
 
 /**
- * Structure de données représentant un élément Lien. 
- * Convention: les identifiants des propriétés et méthodes privées commencent
- * par un caractère de soulignement "_".
+ * Structure de données représentant représentant un lien.
  */
 var Lien = {
 
     /**
-     * Méthode d'initialisation des objets de type Lien.
-     * description: objet contenant les propriétés titre, url et auteur
+     * Méthode d'inititialisation du nouveau lien.
+     * - description: objet décrivant le nouveau lien à créer.
      */
-    initLien: function(description) {
-        // Création des nouveaux éléments
-        this._sectionElt = document.createElement("section");
-        this._sectionElt.classList.add("lien");
+    init: function(description) {
+        var lien = this._data = {};
 
-        this._titreElt = document.createElement("h2");
-        this._aElt = document.createElement("a");
-        this._urlElt = document.createElement("span");
+        // Création du titre du nouveau lien
+        lien.titre = document.createElement("a");
+        lien.titre.textContent = description.titre;
+        lien.titre.href = description.url;
 
-        this._auteurElt = document.createElement("p");
+        // Création de l'url du nouveau lien
+        lien.url = document.createElement("span");
+        lien.url.textContent = description.url;
 
-        // Ajout des données
-        this._aElt.textContent = description.titre;
-        this._aElt.href = description.url;
-        this._urlElt.textContent = " " + description.url;
-        this._auteurElt.textContent = "Ajouté par " + description.auteur;
+        // Création de la ligne d'entête content le titre et l'url du nouveau
+        // lien
+        lien.entete = document.createElement("h4");
+        lien.entete.appendChild(lien.titre);
+        lien.entete.appendChild(lien.url);
 
-        // Construction de l'arbre
-        this._titreElt.appendChild(this._aElt);
-        this._titreElt.appendChild(this._urlElt);
+        // Création de la ligne d'info du nouveau lien
+        lien.info = document.createElement("span");
+        lien.info.textContent = "Ajouté par " + description.auteur;
 
-        this._sectionElt.appendChild(this._titreElt);
-        this._sectionElt.appendChild(this._auteurElt);
+        // Création du conteneur pour le nouveau lien
+        this.element = document.createElement("div");
+        this.element.classList.add("lien");
+        this.element.appendChild(lien.entete);
+        this.element.appendChild(lien.info);
 
-        // Application des styles
-        this._style();
+        // Application des styles CSS pour le nouveau lien
+        this.style();
     },
 
     /**
-     * Méthode publique retournant la racine de l'arbre, c-à-d l'élément section.
+     * Méthode responsable d'appliquer les styles CSS au nouveau lien
      */
-    get: function() {
-        return this._sectionElt;
-    },
+    style: function() {
+        var lien = this._data;
 
-    /**
-     * Méthode privée responsable d'appliquer les styles CSS aux liens.
-     */
-    _style: function() {
-        //Styles pour l'élément titre
-        this._titreElt.style.marginTop = "0";
-        this._titreElt.style.marginBottom = "0.5ex";
+        // Styles à appliquer pour l'entête
+        lien.entete.style.margin = "0px";
 
-        // Styles pour l'élément a
-        this._aElt.style.textDecoration = "none";
-        this._aElt.style.color = "#428bca";
+        // Styles à appliquer pour le titre
+        lien.titre.style.color = "#428bca";
+        lien.titre.style.marginRight = "5px";
+        lien.titre.style.textDecoration = "none";
 
-        // Styles pour l'élément url
-        this._urlElt.style.fontSize = getComputedStyle(this._auteurElt).fontSize;
+        // Styles à appliquer pour l'url
 
-        // Styles pour l'élément auteur
-        this._auteurElt.style.marginTop = "0";
-        this._auteurElt.style.marginBottom = "0";
+        // Styles à appliquer pour la ligne d'information
+
+        // Styles à appliquer pour le conteneur this.element
     },
 };
+
 
 /**
  * Structure de donnée représentant la liste de liens dans le DOM.
@@ -96,32 +93,37 @@ var Lien = {
 var Liste = {
     /**
      * Méthode d'initialisation d'un objet de type "Liste de liens".
+     * - liste: élément du DOM destiné à contenir la liste.
      */
-    initListe: function() {
-        this._contenu = [];
-        this._contenuElt = document.getElementById("contenu");
+    init: function(liste) {
+        this._data = [];
+        this.element = liste;
     },
 
     /**
-     * Méthode publique permettant d'ajouter un lien en queue de liste.
+     * Méthode permettant d'ajouter un lien en queue de liste.
      */
-    ajouter: function(lien) {
-        this._contenu.push(lien.get());
-        this._contenuElt.appendChild(lien.get());
+    append: function(lien) {
+        var liste = this._data;
+
+        liste.push(lien);
+        this.element.appendChild(lien.element);
     },
     
     /**
-     * Méthode publique permettant d'ajouter un lien en début de liste.
+     * Méthode permettant d'ajouter un lien en début de liste.
      */
-    ajouterDebut: function(lien) {
-        if (this._contenu.length > 0)
+    prepend: function(lien) {
+        var liste = this._data;
+
+        if (liste.length > 0)
         {
-            this._contenuElt.insertBefore(lien.get(), this._contenu[0]);
-            this._contenu.splice(0, 0, lien.get());
+            this.element.insertBefore(lien.element, liste[0].element);
+            liste.splice(0, 0, lien);
         }
         else
         {
-            this.ajouter(lien);
+            this.append(lien);
         }
     },
 }
@@ -137,7 +139,7 @@ var Formulaire = {
         this._Feedback.init(false);
         this._Bouton.init(true);
         this._Formulaire.init(true);
-        this._Feedback.afficher("Ceci est un essai");
+        this._Feedback.afficher("Ceci est un essai", 3);
     },
 
     /**
@@ -157,16 +159,26 @@ var Formulaire = {
             this._style();
         },
 
+        /**
+         * Méthode privée responsable de l'application des styles sur le bloc
+         * de feedback.
+         */
         _style: function () {
             this._blocElt.style.backgroundColor = "#CEE7F0";
         },
-
-        afficher: function(texte) {
+    
+        /**
+         * Méthode publique responsable de l'affichage d'un texte dans le bloc
+         * de feedback durant n secondes.
+         * texte: texte à afficher dans le bloc.
+         * n: durée d'affichage du bloc en secondes.
+         */
+        afficher: function(texte, n) {
             this._blocElt.textContent = texte;
             this._blocElt.style.display = "block";
             setTimeout(function () {
                 this._blocElt.style.display = "none";
-            }.bind(this), 5000);
+            }.bind(this), n * 1000);
         },
 
     },
@@ -191,6 +203,10 @@ var Formulaire = {
             this._style();
         },
 
+        /**
+         * Méthode privée responsable de l'application des styles sur le bouton
+         * "Ajouter un lien".
+         */
         _style: function () {
         },
 
@@ -205,7 +221,6 @@ var Formulaire = {
     _Formulaire: {
         init: function(visible) {
             this._blocElt = document.createElement("form");
-            this._blocElt.style.margin = "20px 0px";
 
             this._auteurElt = this._creerSaisieTexte("auteur", "Entrez votre nom", "20%");
             this._blocElt.appendChild(this._auteurElt);
@@ -229,8 +244,13 @@ var Formulaire = {
 
             this._style();
         },
-
+        
+        /**
+         * Méthode privée responsable de l'application des styles sur le
+         * formulaire d'ajout.
+         */
         _style: function () {
+            this._blocElt.style.margin = "20px 0px";
             this._titreElt.style.marginLeft = "10px";
             this._urlElt.style.marginLeft = "10px";
             this._boutonElt.style.marginLeft = "10px";
@@ -260,15 +280,17 @@ var Formulaire = {
  * page en langage haut niveau.
  */
 function main() {
+    var contenu = document.getElementById("contenu");
+
     // Création et initialisation de la liste
     var liste = Object.create(Liste);
-    liste.initListe();
+    liste.init(contenu);
 
     // Itération à travers la liste de lien
-    listeLiens.forEach(function(description) {
+    listeLiens.forEach(function (description) {
         var lien = Object.create(Lien);
-        lien.initLien(description);
-        liste.ajouter(lien);
+        lien.init(description);
+        liste.append(lien);
     });
 
     // Ajout du formulaire

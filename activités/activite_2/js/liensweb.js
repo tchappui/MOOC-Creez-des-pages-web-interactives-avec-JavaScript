@@ -1,12 +1,13 @@
 /* 
- * Activité 1
+ * Activité 2
  */
 
-/**
+/* ===========================================================================
  * Liste des liens Web à afficher. Un lien est défini par :
  * - son titre
  * - son URL
  * - son auteur (la personne qui l'a publié)
+ * ===========================================================================
  */
 var listeLiens = [{
     titre: "So Foot",
@@ -22,258 +23,246 @@ var listeLiens = [{
     auteur: "annie.zette"
 }];
 
+/* ===========================================================================
+ * Définition des styles CSS
+ * ===========================================================================
+ */
 
-// Insertion d'un conteneur pour le formulaire avant "contenu"
-var divContenu = document.getElementById("contenu");
-var divFormulaire = document.createElement("div");
-divFormulaire.id = "formulaire";
-document.body.insertBefore(divFormulaire, divContenu);
+// Définition des styles CSS d'un lien
+function stylerLien(lien) {
+    lien.entete.style.margin = "0px";
+    lien.titre.style.color = "#428bca";
+    lien.titre.style.marginRight = "5px";
+    lien.titre.style.textDecoration = "none";
 
-// Création et initialisation de la liste de liens
-var liste = new Liste(divContenu);
+    return lien.element;
+};
 
-// Itération à travers la liste de lien
-listeLiens.forEach(function(description) {
-    var lien = new Lien(description);
-    liste.append(lien);
-});
+// Définition des styles CSS pour le message de Feedback
+function stylerFeedback(fb) {
+    fb.element.style.backgroundColor = "#d6ecf6";
+    fb.element.style.margin = "15px 0px";
+    fb.element.style.padding = "20px";
+    fb.element.style.color = "#67acca";
+    fb.element.style.fontSize = "larger";
+    fb.element.style.borderRadius = "10px";
 
-// Ajout du formulaire
-var formulaire = new Formulaire(divFormulaire, liste);
+    return fb.element;
+}
 
+// Définition des styles CSS pour le bouton Ajouter
+function stylerBoutonAjouter(btn) {
+    btn.element.style.margin = "15px 0px";
+    btn.element.style.padding = "3px 15px";
+    btn.element.style.borderRadius = "5px";
+    btn.element.style.backgroundColor = "#fff";
+    btn.element.style.border = "1px solid #B8B8B8";
 
-// Structures de données ====================================================
+    return btn.element;
+}
 
-//Construction d'un lien
-function Lien(description) {
-    // Passage de this aux méthodes privées
-    var self = this;
+// Définition des styles CSS pour le formulaire
+function stylerFormulaire(fm) {
+    fm.element.style.margin = "10px 0px";
+    fm.auteur.style.marginRight = "10px";
+    fm.titre.style.marginRight = "10px";
+    fm.url.style.marginRight = "10px";
+    fm.soumettre.style.borderRadius = "5px";
+    fm.soumettre.style.backgroundColor = "#fff";
+    fm.soumettre.style.border = "1px solid #B8B8B8";
+    fm.soumettre.style.padding = "3px 15px";
 
-    // Création du titre du nouveau lien
-    var titre = document.createElement("a");
-    titre.textContent = description.titre;
-    titre.href = description.url;
+    return fm.element;
+}
 
-    // Création de l'url du nouveau lien
-    var url = document.createElement("span");
-    url.textContent = description.url;
+/* ===========================================================================
+ * Structures de données
+ * ===========================================================================
+ */
 
-    // Création de la ligne d'entête content le titre et l'url du nouveau
-    // lien
-    var entete = document.createElement("h4");
-    entete.appendChild(titre);
-    entete.appendChild(url);
-
-    // Création de la ligne d'info du nouveau lien
-    var info = document.createElement("span");
-    info.textContent = "Ajouté par " + description.auteur;
-
-    // Création du conteneur pour le nouveau lien
-    var element = document.createElement("div");
-    element.classList.add("lien");
-    element.appendChild(entete);
-    element.appendChild(info);
-    this.element = element;
-
-    // Application des styles CSS pour le nouveau lien
-    style();
-
-    // Définition des styles CSS d'un lien
-    function style() {
-        // Styles à appliquer pour l'entête
-        entete.style.margin = "0px";
-
-        // Styles à appliquer pour le titre
-        titre.style.color = "#428bca";
-        titre.style.marginRight = "5px";
-        titre.style.textDecoration = "none";
+// Fonction utilitaire facilitant la définission de classes et l'héritage
+function newClass(cls, base) {
+    if (base !== undefined) {
+        cls.prototype = Object.create(base.prototype);
+        cls.prototype.constructor = cls;
     }
 }
 
-// Construction d'une liste de liens
-function Liste(liste) {
-    var liens = [];
-    this.element = liste;
+/**
+ * "Classe de base" implementant un composant qui peut s'afficher ou se cacher
+ */
 
-    // Méthode publique permettant d'ajouter un lien en queue de liste.
-    this.append = function(lien) {
-        liens.push(lien);
-        this.element.appendChild(lien.element);
-    };
+newClass(AfficherCacher);
+function AfficherCacher() {}
+AfficherCacher.prototype.afficher = function() {
+    this.element.style.display = "block";
+};
+AfficherCacher.prototype.cacher = function() {
+    this.element.style.display = "none";
+};
 
-    // Méthode publique permettant d'ajouter un lien en début de liste.
-    this.prepend = function(lien) {
-        if (liens.length > 0) {
-            this.element.insertBefore(lien.element, liens[0].element);
-            liens.splice(0, 0, lien);
-        } else {
-            this.append(lien);
-        }
-    };
+/**
+ * "Classe" représentant un lien
+ */
+
+// Constructeur
+newClass(Lien);
+function Lien(description) {
+    // Création du titre du nouveau lien
+    this.titre = document.createElement("a");
+    this.titre.textContent = description.titre;
+    this.titre.href = description.url;
+
+    // Création de l'url du nouveau lien
+    this.url = document.createElement("span");
+    this.url.textContent = description.url;
+
+    // Création de la ligne d'entête content le titre et l'url du nouveau
+    // lien
+    this.entete = document.createElement("h4");
+    this.entete.appendChild(this.titre);
+    this.entete.appendChild(this.url);
+
+    // Création de la ligne d'info du nouveau lien
+    this.info = document.createElement("span");
+    this.info.textContent = "Ajouté par " + description.auteur;
+
+    // Création du conteneur pour le nouveau lien
+    this.element = document.createElement("div");
+    this.element.classList.add("lien");
+    this.element.appendChild(this.entete);
+    this.element.appendChild(this.info);
 }
 
-// Construction du formulaire
-function Formulaire(formulaire, liste) {
-    // Lien vers l'élément du DOM destiné à contenir le formulaire
-    this.element = formulaire;
-    this.liste = liste;
+/**
+ * "Classe" représentant le message de feedback confirmant l'ajout du lien
+ */
 
-    // Initialisation des composants du formulaire
-    var feedback = new Feedback(false);
-    var bouton = new Bouton(true);
-    var form = new Form(false);
+// Constructeur
+newClass(Feedback, AfficherCacher);
+function Feedback() {
+    this.element = document.createElement("div");
+    this.element.style.display = "none";
+}
 
-    bouton.element.addEventListener("click", function(e) {
-        bouton.cacher();
-        form.afficher();
+// Méthode publique affichant un feedback de confirmation durant n secondes.
+Feedback.prototype.confirmer = function (texte, n) {
+    this.element.textContent = texte;
+    this.afficher();
+    setTimeout(function () {
+        this.cacher();
+    }.bind(this), n * 1000);
+};
+
+
+/**
+ * "Classe" représentant le bouton "Ajouter un lien"
+ */
+
+// Constructeur
+newClass(BoutonAjouter, AfficherCacher);
+function BoutonAjouter() {
+    this.element = document.createElement("button");
+    this.element.style.display = "block";
+    this.element.textContent = "Ajouter un lien";
+}
+
+/** 
+ * "Classe" représentant le formulaire
+ */
+
+// Constructeur
+newClass(Formulaire, AfficherCacher);
+function Formulaire(visible) {
+    this.element = document.createElement("form");
+    this.element.style.display = "none";
+
+    this.auteur = creerSaisieTexte("auteur", "Entrez votre nom", "20%");
+    this.element.appendChild(this.auteur);
+
+    this.titre = creerSaisieTexte("titre", "Entrez le titre du lien", "25%");
+    this.element.appendChild(this.titre);
+
+    this.url = creerSaisieTexte("url", "Entrez l'URL du lien", "25%");
+    this.element.appendChild(this.url);
+
+    this.soumettre = document.createElement("input");
+    this.soumettre.type = "submit";
+    this.soumettre.value = "Ajouter";
+    this.element.appendChild(this.soumettre);
+
+    // Création d'un champs de saise de texte
+    function creerSaisieTexte(name, placeholder, width) {
+        var element = document.createElement("input");
+        element.type = "texte";
+        element.id = name;
+        element.name, name;
+        element.placeholder = placeholder;
+        element.required = true;
+        element.style.width = width;
+        return element;
+    }
+}
+
+/* ===========================================================================
+ * Point d'entrée de l'exécution du script 
+ * ===========================================================================
+ */
+
+function main() {
+    // Adaptation du titre 
+    document.title = "Activité 2";
+    document.body.firstElementChild.textContent = "Activité 2";
+
+    // Création de la liste de liens
+    var liste = document.getElementById("contenu");
+
+    // Itération à travers le tableau de liens et initialisation de la liste
+    listeLiens.forEach(function(description) {
+        var lien = new Lien(description);
+        liste.appendChild(stylerLien(lien));
     });
 
-    form.element.addEventListener("submit", function(e) {
+    // Création d'un conteneur pour le formulaire juste avant la liste de liens
+    var formulaire = document.createElement("div");
+    formulaire.id = "formulaire";
+    liste.parentElement.insertBefore(formulaire, liste);
+
+    // Initialisation des composants du formulaire
+    var feedback = new Feedback();
+    var bouton = new BoutonAjouter();
+    var form = new Formulaire();
+
+    // Gestion des événements
+    bouton.element.addEventListener("click", function (e) {
+        bouton.cacher();
+        form.afficher();
+        form.auteur.focus();
+    });
+
+    form.element.addEventListener("submit", function (e) {
         var description = {
             "titre": e.target.elements.titre.value,
             "url": e.target.elements.url.value,
             "auteur": e.target.elements.auteur.value
         };
-        if (!/^https?\:\/\//.test(description.url))
-        {
+        if (!/^https?\:\/\//.test(description.url)) {
             description.url = "http://" + description.url;
         }
         var lien = new Lien(description);
-        this.liste.prepend(lien);
+        liste.insertBefore(stylerLien(lien), liste.firstElementChild);
         form.cacher();
         bouton.afficher();
-        feedback.afficher('Le lien "' + e.target.elements.titre.value + '" a bien été ajouté.', 2);
+        feedback.confirmer('Le lien "' + e.target.elements.titre.value + '" a bien été ajouté.', 2);
+        e.target.reset();
         e.preventDefault();
-    }.bind(this));
+    });
 
-    this.element.appendChild(feedback.element);
-    this.element.appendChild(bouton.element);
-    this.element.appendChild(form.element);
+    // Ajout des composants du formulaire dans le DOM
+    formulaire.appendChild(stylerFeedback(feedback));
+    formulaire.appendChild(stylerBoutonAjouter(bouton));
+    formulaire.appendChild(stylerFormulaire(form));
 }
 
-// Construction du feedback
-function Feedback(visible) {
-    // Passage de this aux méthodes privées
-    var self = this;
-
-    this.element = document.createElement("div");
-    if (!visible) {
-        this.element.style.display = "none";
-    }
-
-    // Application des styles CSS à notre élément de feedback
-    style();
-
-    // Définition des styles pour l'élément MessageFeedback
-    function style() {
-        self.element.style.backgroundColor = "#CEE7F0";
-        self.element.style.margin = "15px 0px";
-        self.element.style.padding = "20px";
-        self.element.style.color = "#147A9C";
-    }
-
-    // Méthode publique affichant un texte de feedback durant n secondes.
-    this.afficher = function(texte, n) {
-        this.element.textContent = texte;
-        this.element.style.display = "block";
-        setTimeout(function() {
-            this.element.style.display = "none";
-        }.bind(this), n * 1000);
-    };
-}
-
-
-// Construction du bouton "Ajouter un lien"
-function Bouton(visible) {
-    // Passage de this aux méthodes privées
-    var self = this;
-
-    this.element = document.createElement("div");
-    var bouton = document.createElement("button");
-    bouton.textContent = "Ajouter un lien";
-    this.element.appendChild(bouton)
-    if (!visible) {
-        this.element.style.display = "none";
-    }
-
-    // Appliquation des styles CSS au bouton
-    style();
-
-    // Définition des styles CSS pour le composant BoutonAjouter
-    function style() {
-        self.element.style.margin = "15px 0px";
-        bouton.style.borderRadius = "5px";
-    }
-
-    // Méthode publique affichant le bouton "Ajouter un lien"
-    this.afficher = function() {
-        this.element.style.display = "block";
-    };
-
-    // Méthode publique cachant le bouton "Ajouter un lien
-    this.cacher = function() {
-        this.element.style.display = "none";
-    };
-}
-
-
-// Construction de <form>
-function Form(visible) {
-    // Passage de this aux méthodes privées
-    var self = this;
-
-    // Création et initialisation des composants
-    this.element = document.createElement("form");
-
-    var auteur = creerSaisieTexte("auteur", "Entrez votre nom", "20%");
-    this.element.appendChild(auteur);
-
-    var titre = creerSaisieTexte("titre", "Entrez le titre du lien", "25%");
-    this.element.appendChild(titre);
-
-    var url = creerSaisieTexte("url", "Entrez l'URL du lien", "25%");
-    this.element.appendChild(url);
-
-    var bouton = document.createElement("input");
-    bouton.setAttribute("type", "submit");
-    bouton.setAttribute("value", "Ajouter");
-    this.element.appendChild(bouton);
-
-    if (!visible) {
-        this.element.style.display = "none";
-    }
-
-    // Application des styles CSS au composant form
-    style();
-
-    // Définition des styles CSS pour le formulaire.
-    function style() {
-        self.element.style.margin = "10px 0px";
-        auteur.style.marginRight = "10px";
-        titre.style.marginRight = "10px";
-        url.style.marginRight = "10px";
-        bouton.style.borderRadius = "5px";
-    }
-
-    // Création d'un champs de saise de texte
-    function creerSaisieTexte(name, placeholder, width) {
-        var element = document.createElement("input");
-        element.setAttribute("type", "texte");
-        element.setAttribute("id", name);
-        element.setAttribute("name", name);
-        element.setAttribute("placeholder", placeholder);
-        element.required = true;
-        element.style.width = width;
-        return element;
-    }
-
-    // Méthode publique affichant le formulaire de saisie de lien
-    this.afficher = function() {
-        this.element.style.display = "block";
-    };
-
-    // Méthode publique cachant le formulaire de saisie de lien
-    this.cacher = function() {
-        this.element.style.display = "none";
-    };
-}
+// Exécution du script
+main();

@@ -13,75 +13,33 @@ var serviceURI = {
 };
 
 /* ===========================================================================
- * Définition des styles CSS
- * ===========================================================================
- */
-
-// Définition des styles CSS d'un lien
-function stylerLien(lien) {
-    lien.entete.style.margin = "0px";
-    lien.titre.style.color = "#428bca";
-    lien.titre.style.marginRight = "5px";
-    lien.titre.style.textDecoration = "none";
-
-    return lien.element;
-};
-
-// Définition des styles CSS pour le message de Feedback
-function stylerFeedback(fb) {
-    fb.element.style.backgroundColor = "#d6ecf6";
-    fb.element.style.margin = "15px 0px";
-    fb.element.style.padding = "20px";
-    fb.element.style.color = "#67acca";
-    fb.element.style.fontSize = "larger";
-    fb.element.style.borderRadius = "10px";
-
-    return fb.element;
-}
-
-// Définition des styles CSS pour le bouton Ajouter
-function stylerBoutonAjouter(btn) {
-    btn.element.style.margin = "15px 0px";
-    btn.element.style.padding = "3px 15px";
-    btn.element.style.borderRadius = "5px";
-    btn.element.style.backgroundColor = "#fff";
-    btn.element.style.border = "1px solid #B8B8B8";
-
-    return btn.element;
-}
-
-// Définition des styles CSS pour le formulaire
-function stylerFormulaire(fm) {
-    fm.element.style.margin = "10px 0px";
-    fm.auteur.style.marginRight = "10px";
-    fm.titre.style.marginRight = "10px";
-    fm.url.style.marginRight = "10px";
-    fm.soumettre.style.borderRadius = "5px";
-    fm.soumettre.style.backgroundColor = "#fff";
-    fm.soumettre.style.border = "1px solid #B8B8B8";
-    fm.soumettre.style.padding = "3px 15px";
-
-    return fm.element;
-}
-
-/* ===========================================================================
  * Structures de données
  * ===========================================================================
  */
 
-// Fonction utilitaire facilitant la définission de classes et l'héritage
-function newClass(cls, base) {
-    if (base !== undefined) {
-        cls.prototype = Object.create(base.prototype);
-        cls.prototype.constructor = cls;
-    }
+/**
+ * Sets up the prototype chain for class inheritance.
+ *
+ * Useful function for easy creation of a new class 
+ * from a base class using inheritance in ES5.
+ *
+ * @param {function} cls  New class constructor.
+ * @param {function} base Base class constructor (optional)
+ */
+function Class(cls, base) {
+  if (base !== undefined) {
+    cls.prototype = Object.create(base.prototype);
+    // The constructor property is set wrong. Let's fix this
+    cls.prototype.constructor = cls
+    cls.base = base.prototype;
+  }
 }
 
 /**
  * "Classe de base" implementant un composant qui peut s'afficher ou se cacher
  */
 
-newClass(AfficherCacher);
+Class(AfficherCacher);
 
 function AfficherCacher() {}
 AfficherCacher.prototype.afficher = function() {
@@ -96,7 +54,7 @@ AfficherCacher.prototype.cacher = function() {
  */
 
 // Constructeur
-newClass(Lien);
+Class(Lien);
 
 function Lien(description) {
     // Création du titre du nouveau lien
@@ -123,14 +81,24 @@ function Lien(description) {
     this.element.classList.add("lien");
     this.element.appendChild(this.entete);
     this.element.appendChild(this.info);
+    
+    this._styler();
 }
+
+// Définition des styles CSS d'un lien
+Lien.prototype._styler = function() {
+    this.entete.style.margin = "0px";
+    this.titre.style.color = "#428bca";
+    this.titre.style.marginRight = "5px";
+    this.titre.style.textDecoration = "none";
+};
 
 /**
  * "Classe" représentant le message de feedback confirmant l'ajout du lien
  */
 
 // Constructeur
-newClass(Feedback, AfficherCacher);
+Class(Feedback, AfficherCacher);
 
 function Feedback() {
     this.element = document.createElement("div");
@@ -144,7 +112,19 @@ Feedback.prototype.confirmer = function(texte, n) {
     setTimeout(function() {
         this.cacher();
     }.bind(this), n * 1000);
+    
+    this._styler();
 };
+
+// Définition des styles CSS pour le message de Feedback
+Feedback.prototype._styler = function () {
+    this.element.style.backgroundColor = "#d6ecf6";
+    this.element.style.margin = "15px 0px";
+    this.element.style.padding = "20px";
+    this.element.style.color = "#67acca";
+    this.element.style.fontSize = "larger";
+    this.element.style.borderRadius = "10px";
+}
 
 
 /**
@@ -152,12 +132,23 @@ Feedback.prototype.confirmer = function(texte, n) {
  */
 
 // Constructeur
-newClass(BoutonAjouter, AfficherCacher);
+Class(BoutonAjouter, AfficherCacher);
 
 function BoutonAjouter() {
     this.element = document.createElement("button");
     this.element.style.display = "block";
     this.element.textContent = "Ajouter un lien";
+    
+    this._styler();
+}
+
+// Définition des styles CSS pour le bouton Ajouter
+BoutonAjouter.prototype._styler = function () {
+    this.element.style.margin = "15px 0px";
+    this.element.style.padding = "3px 15px";
+    this.element.style.borderRadius = "5px";
+    this.element.style.backgroundColor = "#fff";
+    this.element.style.border = "1px solid #B8B8B8";
 }
 
 /** 
@@ -165,19 +156,19 @@ function BoutonAjouter() {
  */
 
 // Constructeur
-newClass(Formulaire, AfficherCacher);
+Class(Formulaire, AfficherCacher);
 
 function Formulaire(visible) {
     this.element = document.createElement("form");
     this.element.style.display = "none";
 
-    this.auteur = creerSaisieTexte("auteur", "Entrez votre nom", "20%");
+    this.auteur = this._creerSaisieTexte("auteur", "Entrez votre nom", "20%");
     this.element.appendChild(this.auteur);
 
-    this.titre = creerSaisieTexte("titre", "Entrez le titre du lien", "25%");
+    this.titre = this._creerSaisieTexte("titre", "Entrez le titre du lien", "25%");
     this.element.appendChild(this.titre);
 
-    this.url = creerSaisieTexte("url", "Entrez l'URL du lien", "25%");
+    this.url = this._creerSaisieTexte("url", "Entrez l'URL du lien", "25%");
     this.element.appendChild(this.url);
 
     this.soumettre = document.createElement("input");
@@ -185,8 +176,23 @@ function Formulaire(visible) {
     this.soumettre.value = "Ajouter";
     this.element.appendChild(this.soumettre);
 
-    // Création d'un champs de saise de texte
-    function creerSaisieTexte(name, placeholder, width) {
+    this._styler();
+}
+
+// Définition des styles CSS pour le formulaire
+Formulaire.prototype._styler = function () {
+    this.element.style.margin = "10px 0px";
+    this.auteur.style.marginRight = "10px";
+    this.titre.style.marginRight = "10px";
+    this.url.style.marginRight = "10px";
+    this.soumettre.style.borderRadius = "5px";
+    this.soumettre.style.backgroundColor = "#fff";
+    this.soumettre.style.border = "1px solid #B8B8B8";
+    this.soumettre.style.padding = "3px 15px";
+}
+
+// Création d'un champs de saise de texte
+Formulaire.prototype._creerSaisieTexte = function (name, placeholder, width) {
         var element = document.createElement("input");
         element.type = "texte";
         element.id = name;
@@ -195,7 +201,6 @@ function Formulaire(visible) {
         element.required = true;
         element.style.width = width;
         return element;
-    }
 }
 
 /* ===========================================================================

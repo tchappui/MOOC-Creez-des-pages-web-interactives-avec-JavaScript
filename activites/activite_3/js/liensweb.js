@@ -211,7 +211,7 @@ Formulaire.prototype._creerSaisieTexte = function (name, placeholder, width) {
 
 function main() {
     // Adaptation du titre 
-    document.title = "Activité 5";
+    document.title = "Activité 3";
     document.body.firstElementChild.textContent = "Activité 3";
 
     // Création de la liste de liens

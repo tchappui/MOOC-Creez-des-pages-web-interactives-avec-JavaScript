@@ -13,7 +13,8 @@ var serviceURI = {
 };
 
 /* ===========================================================================
- * Structures de données
+
+* Structures de données
  * ===========================================================================
  */
 
@@ -27,12 +28,12 @@ var serviceURI = {
  * @param {function} base Base class constructor (optional)
  */
 function Class(cls, base) {
-  if (base !== undefined) {
-    cls.prototype = Object.create(base.prototype);
-    // The constructor property is set wrong. Let's fix this
-    cls.prototype.constructor = cls
-    cls.base = base.prototype;
-  }
+    if (base !== undefined) {
+        cls.prototype = Object.create(base.prototype);
+        // The constructor property is set wrong. Let's fix this
+        cls.prototype.constructor = cls
+        cls.base = base.prototype;
+    }
 }
 
 /**
@@ -41,11 +42,11 @@ function Class(cls, base) {
 
 Class(AfficherCacher);
 
-function AfficherCacher() {}
-AfficherCacher.prototype.afficher = function() {
+function AfficherCacher() { }
+AfficherCacher.prototype.afficher = function () {
     this.element.style.display = "block";
 };
-AfficherCacher.prototype.cacher = function() {
+AfficherCacher.prototype.cacher = function () {
     this.element.style.display = "none";
 };
 
@@ -81,12 +82,12 @@ function Lien(description) {
     this.element.classList.add("lien");
     this.element.appendChild(this.entete);
     this.element.appendChild(this.info);
-    
+
     this._styler();
 }
 
 // Définition des styles CSS d'un lien
-Lien.prototype._styler = function() {
+Lien.prototype._styler = function () {
     this.entete.style.margin = "0px";
     this.titre.style.color = "#428bca";
     this.titre.style.marginRight = "5px";
@@ -106,13 +107,13 @@ function Feedback() {
 }
 
 // Méthode publique affichant un feedback de confirmation durant n secondes.
-Feedback.prototype.confirmer = function(texte, n) {
+Feedback.prototype.confirmer = function (texte, n) {
     this.element.textContent = texte;
     this.afficher();
-    setTimeout(function() {
+    setTimeout(function () {
         this.cacher();
     }.bind(this), n * 1000);
-    
+
     this._styler();
 };
 
@@ -138,7 +139,7 @@ function BoutonAjouter() {
     this.element = document.createElement("button");
     this.element.style.display = "block";
     this.element.textContent = "Ajouter un lien";
-    
+
     this._styler();
 }
 
@@ -193,14 +194,14 @@ Formulaire.prototype._styler = function () {
 
 // Création d'un champs de saise de texte
 Formulaire.prototype._creerSaisieTexte = function (name, placeholder, width) {
-        var element = document.createElement("input");
-        element.type = "texte";
-        element.id = name;
-        element.name, name;
-        element.placeholder = placeholder;
-        element.required = true;
-        element.style.width = width;
-        return element;
+    var element = document.createElement("input");
+    element.type = "texte";
+    element.id = name;
+    element.name, name;
+    element.placeholder = placeholder;
+    element.required = true;
+    element.style.width = width;
+    return element;
 }
 
 /* ===========================================================================
@@ -208,21 +209,20 @@ Formulaire.prototype._creerSaisieTexte = function (name, placeholder, width) {
  * ===========================================================================
  */
 
-
 function main() {
     // Adaptation du titre 
-    document.title = "Activité 3";
+    document.title = "Activité 5";
     document.body.firstElementChild.textContent = "Activité 3";
 
     // Création de la liste de liens
     var liste = document.getElementById("contenu");
 
     // Récupération des liens à partir de l'API web
-    ajaxGet(serviceURI.GET, function(reponse) {
+    ajaxGet(serviceURI.GET, function (reponse) {
         var liens = JSON.parse(reponse);
-        liens.forEach(function(description) {
+        liens.forEach(function (description) {
             var lien = new Lien(description);
-            liste.appendChild(stylerLien(lien));
+            liste.appendChild(lien.element);
         });
     });
 
@@ -237,13 +237,13 @@ function main() {
     var form = new Formulaire();
 
     // Gestion des événements
-    bouton.element.addEventListener("click", function(e) {
+    bouton.element.addEventListener("click", function (e) {
         bouton.cacher();
         form.afficher();
         form.auteur.focus();
     });
 
-    form.element.addEventListener("submit", function(e) {
+    form.element.addEventListener("submit", function (e) {
         var description = {
             "titre": e.target.elements.titre.value,
             "url": e.target.elements.url.value,
@@ -253,9 +253,9 @@ function main() {
             description.url = "http://" + description.url;
         }
 
-        ajaxPost(serviceURI.POST, description, function(reponse) {
+        ajaxPost(serviceURI.POST, description, function (reponse) {
             var lien = new Lien(description);
-            liste.insertBefore(stylerLien(lien), liste.firstElementChild);
+            liste.insertBefore(lien.element, liste.firstElementChild);
             feedback.confirmer('Le lien "' + e.target.elements.titre.value +
                 '" a bien été ajouté.', 2);
         }, true);
@@ -267,9 +267,9 @@ function main() {
     });
 
     // Ajout des composants du formulaire dans le DOM
-    formulaire.appendChild(stylerFeedback(feedback));
-    formulaire.appendChild(stylerBoutonAjouter(bouton));
-    formulaire.appendChild(stylerFormulaire(form));
+    formulaire.appendChild(feedback.element);
+    formulaire.appendChild(bouton.element);
+    formulaire.appendChild(form.element);
 }
 
 // Exécution du script
